@@ -13,12 +13,14 @@ class MoviesController < ApplicationController
     end
     is_redirect = false
     
-   
-    if params[:ratings] and not params[:ratings].empty? 
+    if flash[:ratings]
+      @ratings_to_show = flash[:ratings]
+    elsif params[:ratings] and not params[:ratings].empty? 
       session[:ratings] = params[:ratings].keys
       @ratings_to_show = params[:ratings].keys
+   
     elsif session[:ratings]
-      #is_redirect = true
+      is_redirect = true
       @ratings_to_show = session[:ratings]
     else
       @ratings_to_show = @all_ratings
@@ -40,12 +42,17 @@ class MoviesController < ApplicationController
     #  session[:sort_type] = params[:sort_type]
     #  redirect_to movies_path({sort_type: sort_type, ratings_to_show: @ratings_to_show})
     #end  
-    
-    if params[:order]
+    if flash[:order]
+      @sort_type = flash[:order]
+    elsif params[:order]
       @sort_type = params[:order]
       session[:order] = @sort_type
       @title_f = "hilite bg-warning"
       puts("hello1")
+      is_redirect = true
+    elsif session[:order]
+      is_redirect = true 
+       @sort_type = session[:order]
     else
       @sort_type = ''
       @title_f = "hilite bg-warning"
@@ -57,6 +64,9 @@ class MoviesController < ApplicationController
     
     
     if is_redirect
+      flash[:ratings] = @ratings_to_show
+      flash[:order] = @sort_type
+      flash.keep
      
       redirect_to movies_path({sort_type: @sort_type, ratings_to_show: @ratings_to_show, title_f: @title_f, title_r: @title_r})
     end
