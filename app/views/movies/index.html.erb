@@ -17,9 +17,17 @@
 <table class="table table-striped col-md-12" id="movies">
   <thead>
     <tr>
-      <th>Movie Title</th>
+ 
+      <th > 
+        
+        <%=  link_to "Movie Title", movies_path(:order => 'title'), id: "title_header", class: "#{@sort_type == 'title' ? 'hilite bg-warning' : 'hilite'}"  %>
+        
+        </th>
+      
       <th>Rating</th>
-      <th>Release Date</th>
+       <th >
+      <%=  link_to "Release Date", movies_path(:order => 'release_date'), id: "release_date_header", class: "#{@sort_type == 'release_date' ? 'hilite bg-warning' : 'hilite'}"  %>
+      </th>
       <th>More Info</th>
     </tr>
   </thead>

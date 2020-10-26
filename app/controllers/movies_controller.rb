@@ -11,15 +11,73 @@ class MoviesController < ApplicationController
     @all_ratings = Movie.ratings.map do |rating| 
       rating.rating
     end
+    is_redirect = false
+    
+   
     if params[:ratings] and not params[:ratings].empty? 
-      @ratings_to_show = session[:ratings]= params[:ratings].keys
+      session[:ratings] = params[:ratings].keys
+      @ratings_to_show = params[:ratings].keys
     elsif session[:ratings]
+      #is_redirect = true
       @ratings_to_show = session[:ratings]
     else
-      
+      @ratings_to_show = @all_ratings
     end
     
+
+    @title_f = "hilite bg-warning"
+    @title_r = "hilite bg-warning"
+    #sort_type = params[:sort_type]
+    #if sort_type and sort_type == 'title'
+    #  @title_f = 'hilite'
+    #elsif session[:sort_type]
+    #  sort_type = session[:sort_type]
+    #  @release_date_f = 'hilite'
+    #end
+    
+    #if params[:ratings] != session[:ratings] || params[:sort_type] != session[:sort_type]
+    #  session[:ratings] = params[:ratings]
+    #  session[:sort_type] = params[:sort_type]
+    #  redirect_to movies_path({sort_type: sort_type, ratings_to_show: @ratings_to_show})
+    #end  
+    
+    if params[:order]
+      @sort_type = params[:order]
+      session[:order] = @sort_type
+      @title_f = "hilite bg-warning"
+      puts("hello1")
+    else
+      @sort_type = ''
+      @title_f = "hilite bg-warning"
+      puts("hello3")
+    end
+    
+    
+    @title_f = "hilite bg-warning"
+    
+    
+    if is_redirect
+     
+      redirect_to movies_path({sort_type: @sort_type, ratings_to_show: @ratings_to_show, title_f: @title_f, title_r: @title_r})
+    end
+
     @movies = Movie.with_ratings(@ratings_to_show)
+    
+    
+    
+    #@sort_type = @sort_type.to_sym
+    puts("hello")
+    puts(@sort_type)
+    puts("sad")
+    if @sort_type == "title" 
+      puts("well?")
+      @movies = @movies.order("title")
+    end
+    if @sort_type == "release_date"
+      @movies = @movies.order :release_date 
+    end
+    
+    
     
       
     
